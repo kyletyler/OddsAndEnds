@@ -5,6 +5,7 @@ using UnityEngine;
 public class activateObject : MonoBehaviour {
 
 	public GameObject tree;
+	//public GameObject brain;
 	public GameObject obj_0;
 	public GameObject obj_1;
 	public GameObject obj_2;
@@ -12,35 +13,33 @@ public class activateObject : MonoBehaviour {
 	public GameObject obj_4;
 	public GameObject obj_5;
 	public GameObject obj_6;
+	public GameObject wall1;
+	public GameObject wall2;
+	public GameObject wall3;
+	public GameObject wall4;
 
 	public float maxSize; 	       //the biggest the objects will grow
     public float growFactor;       //how fast the objects change size
-    public float waitTime; 		   //how long to activate tree
-	public int undulationWaitTime; //how long till objects freak out
+    public float secondsTilTree; 		   //how long to activate tree
+	public int secondsTilObjectsMove; //how long till objects freak out
+	public int secondsTilWallsFall;
 
 	void OnTriggerEnter(Collider other) {
 		StartCoroutine(waitToActivate());
-
-	}
-
-	void Start() {
-		//StartCoroutine(waitToActivate());
-	}
-
-	void Update() {
-		//StartCoroutine(waitToActivate());
 	}
 
     IEnumerator waitToActivate() {
-    	yield return new WaitForSeconds(waitTime); //wait to activate tree
+    	yield return new WaitForSeconds(secondsTilTree); //wait to activate tree
 
     	tree.SetActive(true); //activate tree
+    	//brain.SetActive(true);
 
-    	yield return new WaitForSeconds(undulationWaitTime); //wait to activate undulation
+    	yield return new WaitForSeconds(secondsTilObjectsMove); //wait to activate undulation
 
     	float timer = 0;
- 
-	    while(true) { // this could also be a condition indicating "alive or dead"
+    	int timeSoFar = 0;
+
+	    while(timeSoFar <= secondsTilWallsFall) { // this could also be a condition indicating "alive or dead"
 	        // we scale all axis, so they will have the same value, 
 	        // so we can work with a float instead of comparing vectors
 	        while(maxSize > obj_0.transform.localScale.x) {
@@ -54,10 +53,8 @@ public class activateObject : MonoBehaviour {
 	            obj_6.transform.localScale -= obj_6.transform.localScale * Time.deltaTime * growFactor;
 	            yield return null;
 	        }
+
 	        // reset the timer
-
-	        yield return new WaitForSeconds(waitTime);
-
 	        timer = 0;
 	        while(1 < obj_0.transform.localScale.x) {
 	            timer += Time.deltaTime;
@@ -72,7 +69,34 @@ public class activateObject : MonoBehaviour {
 	        }
 
 	        timer = 0;
-	        yield return new WaitForSeconds(waitTime);
+	        timeSoFar++;
 	    }
+
+	    tree.SetActive(false);
+	    obj_0.SetActive(false);
+	    obj_1.SetActive(false);
+	    obj_2.SetActive(false);
+	    obj_3.SetActive(false);
+	    obj_4.SetActive(false);
+	    obj_5.SetActive(false);
+	    obj_6.SetActive(false);
+
+	    while(wall3.transform.localPosition.z >= -1000) {
+        	yield return new WaitForSeconds (0.001f);
+            wall1.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
+            wall1.transform.localPosition -= new Vector3 (0.0f, 26.0f, -28.0f) * Time.deltaTime;
+            wall3.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
+            wall3.transform.localPosition -= new Vector3 (0.0f, 26.0f, 28.0f) * Time.deltaTime;
+            
+            wall2.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
+            wall2.transform.localPosition -= new Vector3 (-28.0f, 26.0f, 0.0f) * Time.deltaTime;
+            wall4.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
+            wall4.transform.localPosition -= new Vector3 (28.0f, 26.0f, 0.0f) * Time.deltaTime;
+        }
+
+        wall1.SetActive(false);
+        wall2.SetActive(false);
+        wall3.SetActive(false);
+        wall4.SetActive(false);
 	}
 }

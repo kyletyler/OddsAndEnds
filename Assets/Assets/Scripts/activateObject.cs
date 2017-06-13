@@ -13,19 +13,32 @@ public class activateObject : MonoBehaviour {
 	public GameObject obj_4;
 	public GameObject obj_5;
 	public GameObject obj_6;
+	public GameObject obj_7;
+	public GameObject lights;
 	public GameObject wall1;
 	public GameObject wall2;
 	public GameObject wall3;
 	public GameObject wall4;
+	public GameObject owl;
 
 	public float maxSize; 	       //the biggest the objects will grow
     public float growFactor;       //how fast the objects change size
+    //suggested val: 20
     public float secondsTilTree; 		   //how long to activate tree
+	//suggested val: 15
 	public int secondsTilObjectsMove; //how long till objects freak out
+	//suggested val: 15
 	public int secondsTilWallsFall;
+	//suggested val: 5
+	public int secondsTilOwl;
+
+	private bool isTriggered = false;
 
 	void OnTriggerEnter(Collider other) {
-		StartCoroutine(waitToActivate());
+		if(isTriggered == false) { 
+			isTriggered = true;
+			StartCoroutine(waitToActivate());
+		}
 	}
 
     IEnumerator waitToActivate() {
@@ -39,9 +52,8 @@ public class activateObject : MonoBehaviour {
     	float timer = 0;
     	int timeSoFar = 0;
 
-	    while(timeSoFar <= secondsTilWallsFall) { // this could also be a condition indicating "alive or dead"
-	        // we scale all axis, so they will have the same value, 
-	        // so we can work with a float instead of comparing vectors
+	    while(timeSoFar <= secondsTilWallsFall) { 
+	      
 	        while(maxSize > obj_0.transform.localScale.x) {
 	            timer += Time.deltaTime;
 	            obj_0.transform.localScale += obj_0.transform.localScale * Time.deltaTime * growFactor;
@@ -50,7 +62,9 @@ public class activateObject : MonoBehaviour {
 	            obj_3.transform.localScale += obj_3.transform.localScale * Time.deltaTime * growFactor;
 	            obj_4.transform.localScale += obj_4.transform.localScale * Time.deltaTime * growFactor;
 	            obj_5.transform.localScale += obj_5.transform.localScale * Time.deltaTime * growFactor;
-	            obj_6.transform.localScale -= obj_6.transform.localScale * Time.deltaTime * growFactor;
+	            obj_6.transform.localScale += obj_6.transform.localScale * Time.deltaTime * growFactor;
+	            obj_7.transform.localScale += obj_7.transform.localScale * Time.deltaTime * growFactor;
+	            lights.SetActive(false);
 	            yield return null;
 	        }
 
@@ -65,6 +79,8 @@ public class activateObject : MonoBehaviour {
 	            obj_4.transform.localScale -= obj_4.transform.localScale * Time.deltaTime * growFactor;
 	            obj_5.transform.localScale -= obj_5.transform.localScale * Time.deltaTime * growFactor;
 	            obj_6.transform.localScale -= obj_6.transform.localScale * Time.deltaTime * growFactor;
+	            obj_7.transform.localScale -= obj_7.transform.localScale * Time.deltaTime * growFactor;
+	            lights.SetActive(true);
 	            yield return null;
 	        }
 
@@ -72,22 +88,32 @@ public class activateObject : MonoBehaviour {
 	        timeSoFar++;
 	    }
 
-	    tree.SetActive(false);
+	   /* tree.SetActive(false);
 	    obj_0.SetActive(false);
 	    obj_1.SetActive(false);
 	    obj_2.SetActive(false);
 	    obj_3.SetActive(false);
 	    obj_4.SetActive(false);
 	    obj_5.SetActive(false);
-	    obj_6.SetActive(false);
+	    obj_6.SetActive(false);//*/
 
-	    while(wall3.transform.localPosition.z >= -1000) {
+	    Destroy(tree);
+	    Destroy(obj_0);
+	    Destroy(obj_1);
+	    Destroy(obj_2);
+	    Destroy(obj_3);
+	    Destroy(obj_4);
+	    Destroy(obj_5);
+	    Destroy(obj_6);
+	    Destroy(obj_7);
+	    Destroy(lights);
+
+	    while(wall3.transform.localPosition.z >= -450) {
         	yield return new WaitForSeconds (0.001f);
             wall1.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
             wall1.transform.localPosition -= new Vector3 (0.0f, 26.0f, -28.0f) * Time.deltaTime;
             wall3.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
             wall3.transform.localPosition -= new Vector3 (0.0f, 26.0f, 28.0f) * Time.deltaTime;
-            
             wall2.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
             wall2.transform.localPosition -= new Vector3 (-28.0f, 26.0f, 0.0f) * Time.deltaTime;
             wall4.transform.Rotate(Vector3.left * (Time.deltaTime * 8));
@@ -98,5 +124,6 @@ public class activateObject : MonoBehaviour {
         wall2.SetActive(false);
         wall3.SetActive(false);
         wall4.SetActive(false);
+        owl.SetActive(true);
 	}
 }

@@ -15,11 +15,16 @@ public class activateObject : MonoBehaviour {
 	public GameObject obj_6;
 	public GameObject obj_7;
 	public GameObject lights;
+	public GameObject floodLight1;
+	public GameObject floodLight2;
 	public GameObject wall1;
 	public GameObject wall2;
 	public GameObject wall3;
 	public GameObject wall4;
 	public GameObject owl;
+
+	//public Light lt1;
+	//public Light lt2;
 
 	public float maxSize; 	       //the biggest the objects will grow
     public float growFactor;       //how fast the objects change size
@@ -33,6 +38,11 @@ public class activateObject : MonoBehaviour {
 	public int secondsTilOwl;
 
 	private bool isTriggered = false;
+
+	void Start() {
+		//lt1 = GetComponent<Light>();
+		//lt2 = GetComponent<Light>();
+	}
 
 	void OnTriggerEnter(Collider other) {
 		if(isTriggered == false) { 
@@ -48,6 +58,8 @@ public class activateObject : MonoBehaviour {
     	//brain.SetActive(true);
 
     	yield return new WaitForSeconds(secondsTilObjectsMove); //wait to activate undulation
+
+    	obj_0.GetComponent<AudioSource>().Play();
 
     	float timer = 0;
     	int timeSoFar = 0;
@@ -88,14 +100,14 @@ public class activateObject : MonoBehaviour {
 	        timeSoFar++;
 	    }
 
-	   /* tree.SetActive(false);
-	    obj_0.SetActive(false);
-	    obj_1.SetActive(false);
-	    obj_2.SetActive(false);
-	    obj_3.SetActive(false);
-	    obj_4.SetActive(false);
-	    obj_5.SetActive(false);
-	    obj_6.SetActive(false);//*/
+	    floodLight1.SetActive(true);
+	    floodLight2.SetActive(true);
+
+	    for(int i = 0; i <= 200; i++) {
+	    	yield return new WaitForSeconds(0.009f);
+	    	floodLight1.GetComponent<Light>().intensity = i++;
+	    	floodLight2.GetComponent<Light>().intensity = i++;
+	    }
 
 	    Destroy(tree);
 	    Destroy(obj_0);
@@ -107,6 +119,15 @@ public class activateObject : MonoBehaviour {
 	    Destroy(obj_6);
 	    Destroy(obj_7);
 	    Destroy(lights);
+
+	     for(int i = 200; i >= 0; i--) {
+	    	yield return new WaitForSeconds(0.009f);
+	    	floodLight1.GetComponent<Light>().intensity = i--;
+	    	floodLight2.GetComponent<Light>().intensity = i--;
+	    }
+
+	    Destroy(floodLight1);
+	    Destroy(floodLight2);
 
 	    while(wall3.transform.localPosition.z >= -450) {
         	yield return new WaitForSeconds (0.001f);

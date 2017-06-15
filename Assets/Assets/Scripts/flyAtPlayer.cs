@@ -6,7 +6,7 @@ public class flyAtPlayer : MonoBehaviour {
 	
 	public Transform target;
     public float speed;
-    public float dist;
+    float dist;
 
     public GameObject me;
     public GameObject room;
@@ -20,12 +20,6 @@ public class flyAtPlayer : MonoBehaviour {
     void Update() {
     	float step = speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);
-   
-       dist = Vector3.Distance(target.position, transform.position);
-       
-       //if (dist <= 1) {
-       	//transform.position += Vector3.MoveTowards(transform.position, target.position, step);
-       //	Destroy(me);
     }
 
 
